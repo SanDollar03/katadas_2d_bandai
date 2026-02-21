@@ -1,0 +1,579 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    background: #fdfdfd;
+}
+
+/* ===== Topbar ===== */
+.topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: #333;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    z-index: 20;
+}
+
+.topbar h1 {
+    margin: 0;
+    margin-left: 44px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#hamburgerBtn {
+    position: absolute;
+    top: 9px;
+    left: 12px;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+#hamburgerBtn span {
+    display: block;
+    height: 3px;
+    background: #fff;
+    width: 100%;
+    border-radius: 2px;
+}
+
+#settingsBtn {
+    margin-left: auto;
+    height: 32px;
+    padding: 4px 12px;
+    font-size: 14px;
+    background: #555;
+    color: #fff;
+    border: 1px solid #666;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#settingsBtn:hover {
+    background: #666;
+}
+
+/* ===== overlay ===== */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 999;
+    display: none;
+}
+
+.overlay.active {
+    display: block;
+}
+
+/* =========================================================
+   Left Drawer (Trouble Note)
+   - width 20%
+   - vertical scroll
+   ========================================================= */
+.left-drawer {
+    position: fixed;
+    top: 50px;
+    left: 0;
+    bottom: 50px;
+
+    width: 20vw;
+    /* ★ 20% */
+    min-width: 280px;
+    /* 画面が狭い時の保険（不要なら削除OK） */
+    max-width: 520px;
+    /* 広がりすぎ防止（不要なら削除OK） */
+
+    background: #14161b;
+    color: #f5f5f5;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease-out;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #2c2f36;
+}
+
+.left-drawer.open {
+    transform: translateX(0);
+}
+
+.drawer-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid #2c2f36;
+}
+
+.drawer-header h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#closeLeftDrawer {
+    margin-left: auto;
+    background: transparent;
+    color: #fff;
+    border: 1px solid #666;
+    border-radius: 4px;
+    height: 28px;
+    width: 32px;
+    line-height: 26px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+#closeLeftDrawer:hover {
+    background: #555;
+}
+
+/* ★ 左ドロワー内は縦スクロール */
+.drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px;
+}
+
+/* ===== Trouble Note (1 column vertical) ===== */
+.tn-wrap {
+    background: transparent;
+    color: #f5f5f5;
+    font-size: 12px;
+}
+
+.tn-title {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    margin: 0 0 10px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 8px;
+    background: #000;
+    color: #e9eef7;
+}
+
+/* ★ 1カラム：1カードが1ブロック */
+.tn-row {
+    display: block;
+    margin: 0 0 12px;
+    padding: 10px 10px 12px;
+    border: 1px solid #2c2f36;
+    border-radius: 10px;
+    background: #0f1116;
+    overflow: visible;
+    /* パネルが切れないように */
+}
+
+/* ラベル→入力を縦に */
+.tn-cell {
+    display: block;
+    background: transparent;
+    margin: 0 0 10px;
+}
+
+.tn-cell:last-child {
+    margin-bottom: 0;
+}
+
+.tn-cell-label {
+    display: block;
+    margin: 0 0 6px;
+    font-weight: 700;
+    color: #d6d8df;
+    white-space: normal;
+    line-height: 1.2;
+}
+
+.tn-cell-input {
+    padding: 0;
+}
+
+/* 入力統一 */
+.tn-cell-input input,
+.tn-wrap textarea,
+.tn-select,
+.tn-multi-btn {
+    width: 100%;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid #3b404c;
+    background: #222733;
+    color: #f5f5f5;
+    padding: 0 10px;
+    font-size: 13px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.tn-wrap textarea {
+    height: auto;
+    min-height: 90px;
+    padding: 10px;
+    resize: vertical;
+}
+
+.tn-cell-input input:focus,
+.tn-wrap textarea:focus,
+.tn-select:focus,
+.tn-multi-btn:focus {
+    border-color: #00a3ff;
+    box-shadow: 0 0 0 2px rgba(0, 163, 255, 0.35);
+    background: #101118;
+}
+
+/* チェックボックス */
+.tn-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #d6d8df;
+    font-size: 13px;
+}
+
+.tn-check input {
+    width: 18px;
+    height: 18px;
+}
+
+/* セクション見出し */
+.tn-section-label {
+    background: #000 !important;
+    color: #9fb3c8 !important;
+    font-weight: 800;
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin: 0;
+}
+
+/* ===== tn-multi (static open: push down) ===== */
+.tn-multi {
+    position: relative;
+    width: 100%;
+}
+
+.tn-multi-btn {
+    text-align: left;
+    cursor: pointer;
+}
+
+/* ★ 重ならない：static表示（下に展開して押し下げる） */
+.tn-multi-panel {
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    margin-top: 8px;
+    z-index: auto !important;
+
+    background: #14161b;
+    border: 1px solid #3b404c;
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: grid;
+    gap: 8px;
+
+    /* ★ 長いリストはパネル内スクロール */
+    max-height: 260px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* スクロールバー（任意） */
+.tn-multi-panel::-webkit-scrollbar {
+    width: 10px;
+}
+
+.tn-multi-panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+}
+
+/* ✅ チェック左寄せ＋文字隣＋サイズ統一＋縦割れ防止 */
+.tn-multi-panel label {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    padding: 6px 0 !important;
+    margin: 0 !important;
+    width: 100%;
+    text-align: left !important;
+
+    letter-spacing: 0;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    white-space: nowrap;
+}
+
+.tn-multi-panel input[type="checkbox"] {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    min-height: 18px !important;
+    margin: 0 !important;
+    accent-color: #00a3ff;
+}
+
+/* ===== Main area ===== */
+#wrapper {
+    position: absolute;
+    top: 50px;
+    bottom: 50px;
+    left: 0;
+    right: 0;
+    background: #fff;
+}
+
+#grid {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    filter: saturate(0.75);
+}
+
+.cell {
+    width: 100%;
+    height: 100%;
+    border: 0.3px solid rgba(200, 200, 200, 0.3);
+    background: transparent;
+}
+
+.cell.active {
+    box-shadow: 0 0 2px 1px rgba(255, 255, 255, 0.3) inset;
+}
+
+#crosshair-x,
+#crosshair-y {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    z-index: 10;
+    display: none;
+}
+
+#crosshair-x {
+    height: 3px;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+#crosshair-y {
+    width: 3px;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.tooltip {
+    position: absolute;
+    min-width: 120px;
+    padding: 6px 8px;
+    font-size: 12px;
+    color: #fff;
+    background: rgba(20, 20, 20, 0.85);
+    border: 1px solid #444;
+    border-radius: 6px;
+    z-index: 11;
+    pointer-events: none;
+}
+
+/* ===== Footer ===== */
+footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 50px;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 20;
+}
+
+#productSelect,
+#issueSelect,
+#saveButton {
+    height: 32px;
+    font-size: 14px;
+    padding: 4px 10px;
+    margin-right: 10px;
+    box-sizing: border-box;
+}
+
+#productSelect {
+    width: 400px;
+}
+
+#issueSelect {
+    width: 200px;
+}
+
+#saveButton {
+    width: 100px;
+    background: #007acc;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+#saveButton:hover {
+    background: #005fa3;
+}
+
+#currentPath {
+    font-size: 12px;
+    color: #444;
+    margin-left: 10px;
+    max-width: 500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ===== Right Sidebar (Settings) ===== */
+#sidebar {
+    position: fixed;
+    top: 50px;
+    right: 0;
+    bottom: 50px;
+    width: 340px;
+    max-width: 90vw;
+    background: #333;
+    color: #fff;
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.25s ease-out;
+    display: flex;
+    flex-direction: column;
+}
+
+#sidebar.open {
+    transform: translateX(0);
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid #444;
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 16px;
+}
+
+#closeSidebar {
+    margin-left: auto;
+    background: transparent;
+    color: #fff;
+    border: 1px solid #666;
+    border-radius: 4px;
+    height: 28px;
+    width: 32px;
+    line-height: 26px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+#closeSidebar:hover {
+    background: #555;
+}
+
+.sidebar-content {
+    padding: 12px 14px;
+    overflow: auto;
+    flex: 1;
+}
+
+.sb-section {
+    padding: 8px 0;
+}
+
+.sb-section h3 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.sb-section .row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.sb-section input[type="text"],
+.sb-section input[type="number"] {
+    width: 100%;
+    padding: 6px 8px;
+    background: #222;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.sb-section button {
+    padding: 6px 10px;
+    background: #555;
+    color: #fff;
+    border: 1px solid #666;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.sb-section button:hover {
+    background: #666;
+}
+
+.radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 14px;
+}
+
+.grid-edit {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 8px;
+    align-items: end;
+}
+
+#sidebar hr {
+    border: none;
+    border-top: 1px solid #444;
+    margin: 10px 0;
+}
+
+#sidebar small {
+    color: #bbb;
+}

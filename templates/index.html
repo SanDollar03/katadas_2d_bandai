@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>KATADAS2D</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Topbar -->
+    <header class="topbar">
+        <button id="hamburgerBtn" aria-controls="leftDrawer" aria-expanded="false" aria-label="トラブルノート">
+            <span></span><span></span><span></span>
+        </button>
+        <h1>KATADAS2D</h1>
+        <button id="settingsBtn" aria-controls="sidebar" aria-expanded="false">Settings</button>
+    </header>
+
+    <!-- Left overlay + left drawer -->
+    <div id="leftOverlay" class="overlay" hidden></div>
+
+    <aside id="leftDrawer" class="left-drawer" aria-hidden="true" tabindex="-1">
+        <div class="drawer-header">
+            <h2>トラブルノート</h2>
+            <button id="closeLeftDrawer" aria-label="閉じる">×</button>
+        </div>
+
+        <div class="drawer-body">
+            <div class="tn-wrap">
+                <div class="tn-title">トラブルノート（金型用）</div>
+
+                <!-- Row 1: 1,2,3,4 -->
+                <div class="tn-row">
+                    <div class="tn-cell tn-cell-label">成型メーカー</div>
+                    <div class="tn-cell tn-cell-input">
+                        <select id="tn_maker" class="tn-select"></select>
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">2次メーカー</div>
+                    <div class="tn-cell tn-cell-input">
+                        <select id="tn_second_maker" class="tn-select"></select>
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">生産チーム使用欄/No.</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_team_no" type="text" placeholder="No.（半角化）">
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">生産チーム使用欄/印</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_team_mark" type="text" placeholder="印">
+                    </div>
+                </div>
+
+                <!-- Row 2: 5,6,7 -->
+                <div class="tn-row">
+                    <div class="tn-cell tn-cell-label">品番（7桁）</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_partno7" type="text" inputmode="numeric" maxlength="7" placeholder="0000000">
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">商品名</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_product_name" type="text">
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">金型名</div>
+                    <div class="tn-cell tn-cell-input">
+                        <select id="tn_mold_name" class="tn-select"></select>
+                    </div>
+                </div>
+
+                <!-- Row 3: 8,9,10,11,12 -->
+                <div class="tn-row">
+                    <div class="tn-cell tn-cell-label">設備番号（11桁）</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_eq11" type="text" inputmode="numeric" maxlength="11" placeholder="00000000000">
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">金型事業者</div>
+                    <div class="tn-cell tn-cell-input">
+                        <select id="tn_mold_vendor" class="tn-select"></select>
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">制作年月</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_make_ym" type="month">
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">新型初回生産</div>
+                    <div class="tn-cell tn-cell-input">
+                        <label class="tn-check"><input id="tn_first_prod" type="checkbox"><span>該当</span></label>
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">生産ロット（4桁）</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_lot4" type="text" inputmode="numeric" maxlength="4" placeholder="0000">
+                    </div>
+                </div>
+
+                <!-- Row 4: 13,14,15 -->
+                <div class="tn-row">
+                    <div class="tn-cell tn-cell-label">不良発生時スイッチ形状</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_switch_shape" type="text">
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">発生時成形数／計画数</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_shot_plan" type="text" placeholder="100/200pcs">
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">発生時点総成形（ショット）数</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_total_shots" type="text" inputmode="numeric">
+                    </div>
+                </div>
+
+                <!-- Row 5: 16,17,18 -->
+                <div class="tn-row">
+                    <div class="tn-cell tn-cell-label">素材（複数）</div>
+                    <div class="tn-cell tn-cell-input">
+                        <div class="tn-multi" id="tn_materials_multi" data-placeholder="素材を選択">
+                            <button type="button" class="tn-multi-btn">素材を選択</button>
+                            <div class="tn-multi-panel" hidden></div>
+                            <input type="hidden" id="tn_materials" value="">
+                        </div>
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">添加剤等／ステアリン酸・発泡剤</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_additive_ste" type="text">
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">添加素材／上記以外</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_additive_other" type="text">
+                    </div>
+                </div>
+
+                <!-- Row 6: 19,20 -->
+                <div class="tn-row">
+                    <div class="tn-cell tn-cell-label">量産成型機サイズ（型締t）</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_machine_t" type="text" inputmode="numeric" placeholder="例：180">
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">トラブル内容（複数）</div>
+                    <div class="tn-cell tn-cell-input">
+                        <div class="tn-multi" id="tn_trouble_types_multi" data-placeholder="トラブル内容を選択">
+                            <button type="button" class="tn-multi-btn">トラブル内容を選択</button>
+                            <div class="tn-multi-panel" hidden></div>
+                            <input type="hidden" id="tn_trouble_types" value="">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section -->
+                <div class="tn-row">
+                    <div class="tn-cell tn-cell-label tn-section-label">
+                        ここから下は修理担当者コメント・修理記録
+                    </div>
+                </div>
+
+                <!-- Row 7: 21,22,23 -->
+                <div class="tn-row">
+                    <div class="tn-cell tn-cell-label">成形（t）</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_molding_t" type="text" placeholder="180t">
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">成形（枚）</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_molding_sheets" type="text" placeholder="12枚">
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">修理内容（複数）</div>
+                    <div class="tn-cell tn-cell-input">
+                        <div class="tn-multi" id="tn_repair_types_multi" data-placeholder="修理内容を選択">
+                            <button type="button" class="tn-multi-btn">修理内容を選択</button>
+                            <div class="tn-multi-panel" hidden></div>
+                            <input type="hidden" id="tn_repair_types" value="">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 8: 24 -->
+                <div class="tn-row">
+                    <div class="tn-cell tn-cell-label">修理内容／自由記載</div>
+                    <div class="tn-cell tn-cell-input">
+                        <textarea id="tn_repair_free" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- Row 9: 25,26,27 -->
+                <div class="tn-row">
+                    <div class="tn-cell tn-cell-label">コアバラシ</div>
+                    <div class="tn-cell tn-cell-input">
+                        <label class="tn-check"><input id="tn_corebarashi" type="checkbox"><span>実施</span></label>
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">洗浄</div>
+                    <div class="tn-cell tn-cell-input">
+                        <label class="tn-check"><input id="tn_clean" type="checkbox"><span>実施</span></label>
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">トラブル原因（複数）</div>
+                    <div class="tn-cell tn-cell-input">
+                        <div class="tn-multi" id="tn_causes_multi" data-placeholder="原因を選択">
+                            <button type="button" class="tn-multi-btn">原因を選択</button>
+                            <div class="tn-multi-panel" hidden></div>
+                            <input type="hidden" id="tn_causes" value="">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 10: 28,29,30 -->
+                <div class="tn-row">
+                    <div class="tn-cell tn-cell-label">発生原因先（複数）</div>
+                    <div class="tn-cell tn-cell-input">
+                        <div class="tn-multi" id="tn_cause_owner_multi" data-placeholder="発生原因先を選択">
+                            <button type="button" class="tn-multi-btn">発生原因先を選択</button>
+                            <div class="tn-multi-panel" hidden></div>
+                            <input type="hidden" id="tn_cause_owner" value="">
+                        </div>
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">修理時間</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_repair_time" type="text" placeholder="例：2h / 120min">
+                    </div>
+
+                    <div class="tn-cell tn-cell-label">修理完了日</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_repair_done" type="date">
+                    </div>
+                </div>
+
+                <!-- Row 11: 31 -->
+                <div class="tn-row">
+                    <div class="tn-cell tn-cell-label">修理担当者</div>
+                    <div class="tn-cell tn-cell-input">
+                        <input id="tn_repair_person" type="text">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <div id="wrapper">
+        <div id="grid">
+            <div id="crosshair-x"></div>
+            <div id="crosshair-y"></div>
+            <div id="cellTooltip" class="tooltip" hidden></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <select id="productSelect"></select>
+        <select id="issueSelect"></select>
+        <button id="saveButton">CSVに保存</button>
+        <div id="currentPath"></div>
+    </footer>
+
+    <!-- Right overlay + Settings sidebar -->
+    <div id="overlay" class="overlay" hidden></div>
+
+    <aside id="sidebar" aria-hidden="true" tabindex="-1">
+        <div class="sidebar-header">
+            <h2>Settings</h2>
+            <button id="closeSidebar" aria-label="閉じる">×</button>
+        </div>
+
+        <div class="sidebar-content" id="sidebarContent">
+            <section class="sb-section">
+                <h3>保存先変更</h3>
+                <div class="row">
+                    <input type="text" id="inputSavePath" placeholder="例) C:\katadas2d\logs" />
+                    <button id="btnSavePath">変更</button>
+                </div>
+                <small id="savePathHint">現在の保存先はフッター左の「保存先:」に表示されます。</small>
+            </section>
+
+            <hr>
+
+            <section class="sb-section">
+                <h3>十字線色変更</h3>
+                <label class="radio"><input type="radio" name="crosshairColor" value="black" checked> 黒</label>
+                <label class="radio"><input type="radio" name="crosshairColor" value="white"> 白</label>
+            </section>
+
+            <hr>
+
+            <section class="sb-section">
+                <h3>セル枠色変更</h3>
+                <label class="radio"><input type="radio" name="cellBorderColor" value="black" checked> 黒</label>
+                <label class="radio"><input type="radio" name="cellBorderColor" value="white"> 白</label>
+            </section>
+
+            <hr>
+
+            <section class="sb-section">
+                <h3>グリッド数変更</h3>
+                <div class="grid-edit">
+                    <label>縦（最大180）
+                        <input type="number" id="inputRows" min="1" max="180" step="1" value="180">
+                    </label>
+                    <label>横（最大320）
+                        <input type="number" id="inputCols" min="1" max="320" step="1" value="320">
+                    </label>
+                    <button id="btnApplyGrid">適用</button>
+                </div>
+                <small>※ グリッド数変更にはパスワード認証があります。</small>
+            </section>
+        </div>
+    </aside>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>
